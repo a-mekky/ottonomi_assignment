@@ -35,3 +35,34 @@ export const validateJob = [
         next();
     },
 ];
+
+
+export const validateApplication = [
+    body('name')
+        .trim()
+        .notEmpty()
+        .withMessage('Name is required'),
+    body('email')
+        .trim()
+        .notEmpty()
+        .withMessage('Email is required')
+        .isEmail()
+        .withMessage('Please provide a valid email'),
+    body('jobId')
+        .trim()
+        .notEmpty()
+        .withMessage('Job ID is required')
+        .isMongoId()
+        .withMessage('Invalid job ID format'),
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                success: false,
+                message: 'Validation failed',
+                errors: errors.array(),
+            });
+        }
+        next();
+    },
+];

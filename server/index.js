@@ -1,12 +1,15 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+
 import connectDB from './config/database.js';
+
 import jobRoutes from './routes/jobRoutes.js';
-import 'dotenv/config';
+import applicationRoutes from './routes/applicationRoutes.js';
 
 // Create __dirname equivalent for ES6 modules
 const __filename = fileURLToPath(import.meta.url);
@@ -23,13 +26,15 @@ app.use(cors()); // Cross-origin resource sharing
 app.use(express.json()); // Parse JSON bodies
 
 // Static file serving for uploads
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+const uploadDir = process.env.UPLOAD_DIR || 'uploads';
+app.use('/uploads', express.static(path.join(__dirname, uploadDir)));
+
 
 // Job routes
 app.use('/api/jobs', jobRoutes);
+// Application routes
+app.use('/api/applications', applicationRoutes);
 
-// TODO: Mount application routes when implemented
-// app.use('/api/applications', require('./routes/applicationRoutes'));
 
 // Basic health check route
 app.get('/health', (req, res) => {
