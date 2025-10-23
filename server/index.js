@@ -1,9 +1,18 @@
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const path = require('path');
-const connectDB = require('./config/database');
-require('dotenv').config();
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import connectDB from './config/database.js';
+import jobRoutes from './routes/jobRoutes.js';
+import 'dotenv/config';
+
+// Create __dirname equivalent for ES6 modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+
 
 // Initialize Express app
 const app = express();
@@ -16,9 +25,8 @@ app.use(express.json()); // Parse JSON bodies
 // Static file serving for uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Placeholder for future route mounting
-// TODO: Mount job routes when implemented
-// app.use('/api/jobs', require('./routes/jobRoutes'));
+// Job routes
+app.use('/api/jobs', jobRoutes);
 
 // TODO: Mount application routes when implemented
 // app.use('/api/applications', require('./routes/applicationRoutes'));
@@ -74,4 +82,4 @@ const startServer = async () => {
 startServer();
 
 // Export app for testing
-module.exports = app;
+export default app;
