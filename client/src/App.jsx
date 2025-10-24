@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { JobList } from './pages/JobList';
 import { Layout } from './components/layout/Layout';
 import { JobDetail } from './pages/JobDetail';
+import { JobForm } from './components/job/JobForm';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Routes>
           <Route path="/" element={<JobList />} />
           <Route path="/job/:id" element={<JobDetail />} />
+          <Route path="/post-job" element={<JobForm />} />
         </Routes>
       </Layout>
     </Router>
