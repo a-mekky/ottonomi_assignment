@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import morgan from 'morgan';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -23,6 +24,14 @@ const app = express();
 // Middleware configuration
 app.use(helmet()); // Security headers
 app.use(cors()); // Cross-origin resource sharing
+
+// Request logging
+if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev')); // Colored, concise output for development
+} else {
+    app.use(morgan('combined')); // Standard Apache combined log format for production
+}
+
 app.use(express.json()); // Parse JSON bodies
 
 // Static file serving for uploads
