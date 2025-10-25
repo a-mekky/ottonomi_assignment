@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Briefcase, Building2, MapPin, DollarSign, Calendar, ArrowLeft } from 'lucide-react';
+import { Briefcase, Building2, MapPin, DollarSign, Calendar, ArrowLeft, Send } from 'lucide-react';
 import { useJobDetails } from '../hooks/useJobDetails';
 import { Loading } from '../components/shared/Loading';
 import { ErrorMessage } from '../components/shared/ErrorMessage';
@@ -10,11 +10,11 @@ export function JobDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { job, loading, error, refetch } = useJobDetails(id);
-  
+
   if (loading) return <Loading message="Loading job details..." />;
   if (error) return <ErrorMessage message={error} onRetry={refetch} />;
   if (!job) return <ErrorMessage message="Job not found" />;
-  
+
   return (
     <div className="bg-white rounded-3xl shadow-xl shadow-gray-200 border-2 border-gray-100 overflow-hidden my-4 mx-auto max-w-7xl min-h-screen">
       {/* Header Section */}
@@ -102,6 +102,17 @@ export function JobDetail() {
           <p className="text-sm text-gray-500">
             Posted on {formatFullDate(job.datePosted)}
           </p>
+        </div>
+
+        {/* Apply Button */}
+        <div className="mt-8">
+          <button
+            onClick={() => navigate(`/job/${id}/apply`)}
+            className="w-full px-8 py-4 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold text-lg rounded-xl transition-all shadow-lg shadow-blue-200 hover:shadow-xl hover:shadow-blue-300 flex items-center justify-center gap-2"
+          >
+            <Send className="w-6 h-6" />
+            Apply for this Position
+          </button>
         </div>
       </div>
     </div>

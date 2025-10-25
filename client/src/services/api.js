@@ -40,4 +40,59 @@ export const jobService = {
     },
 };
 
+// Application Service
+export const applicationService = {
+    // Submit job application with CV
+    submit: async (applicationData, onProgress) => {
+        try {
+            // Validate before sending
+            if (!applicationData.name?.trim()) {
+                throw new Error('Name is required');
+            }
+            if (!applicationData.email?.trim()) {
+                throw new Error('Email is required');
+            }
+            if (!applicationData.cv) {
+                throw new Error('CV file is required');
+            }
+            const formData = new FormData();
+            formData.append('name', applicationData.name);
+            formData.append('email', applicationData.email);
+            formData.append('jobId', applicationData.jobId);
+            formData.append('cv', applicationData.cv);
+
+            // Send request
+            const response = await api.post('/applications', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }, timeout: 60000, // 60 second timeout
+                onUploadProgress: (progressEvent) => {
+                    if (onProgress && progressEvent.total) {
+                        const percentCompleted = Math.round(
+                            (progressEvent.loaded * 100) / progressEvent.total
+                        );
+                        onProgress(percentCompleted);
+                    }
+                },
+            });
+            return response.data;
+        } catch (error) {
+            // Enhanced error handling
+            if (error.code === 'ECONNABORTED') {
+                throw new Error('Upload timeout. Please check your connection and try again.');
+            }
+            if (error.response?.status === 413) {
+                throw new Error('File too large. Maximum size is 5MB.');
+            }
+            if (error.response?.status === 415) {
+                throw new Error('Unsupported file type. Please upload PDF, DOC, or DOCX.');
+            }
+            if (error.response?.data?.message) {
+                throw new Error(error.response.data.message);
+            }
+            throw new Error('Failed to submit application. Please try again.');
+        }
+    },
+};
+
 export default api;
