@@ -23,7 +23,16 @@ const app = express();
 
 // Middleware configuration
 app.use(helmet()); // Security headers
-app.use(cors()); // Cross-origin resource sharing
+
+// CORS configuration
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? process.env.FRONTEND_URL 
+    : '*',
+  credentials: true
+};
+app.use(cors(corsOptions));
+
 
 // Request logging
 if (process.env.NODE_ENV === 'development') {
