@@ -95,4 +95,39 @@ export const applicationService = {
     },
 };
 
+// Dashboard Service
+export const dashboardService = {
+    // Get overall dashboard statistics
+    getStats: async () => {
+        const response = await api.get('/dashboard/stats');
+        return response.data;
+    },
+
+    // Get all jobs with application counts
+    getJobsWithStats: async () => {
+        const response = await api.get('/dashboard/jobs');
+        return response.data;
+    },
+
+    // Get applications for a specific job
+    getApplicationsForJob: async (jobId) => {
+        const response = await api.get(`/dashboard/jobs/${jobId}/applications`);
+        return response.data;
+    },
+
+    // Get single application details
+    getApplicationDetails: async (applicationId) => {
+        const response = await api.get(`/dashboard/applications/${applicationId}`);
+        return response.data;
+    },
+
+    // Download CV for an application
+    downloadCV: async (applicationId) => {
+        const response = await api.get(`/dashboard/applications/${applicationId}/cv`, {
+            responseType: 'blob', // Important for file download
+        });
+        return response;
+    },
+};
+
 export default api;
