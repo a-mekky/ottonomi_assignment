@@ -1,23 +1,40 @@
 import mongoose from 'mongoose';
 import { Job } from '../models/Job.js';
+import { getPaginationParams, getPaginationMetadata, parseSortParam } from '../utils/pagination.js';
 
 
 /**
- * Get all jobs
- * return : Array of job objects
+ * Get all jobs with pagination
+ * return : Array of job objects with pagination metadata
  */
 export const getAllJobs = async (req, res) => {
     try {
+        // Get pagination parameters
+        const { page, limit, skip } = getPaginationParams(req.query);
+        
+        // Parse sort parameter
+        const sort = parseSortParam(req.query.sort, '-datePosted');
+        
+        // Get total count for pagination metadata
+        const totalItems = await Job.countDocuments();
+        
+        // Get paginated jobs
         const jobs = await Job.find()
-        .lean()
-        .sort({ datePosted: -1 });
-        res.status(200).json({
+            .sort(sort)
+            .skip(skip)
+            .limit(limit)
+            .lean();
+        
+        // Generate pagination metadata
+        const pagination = getPaginationMetadata(page, limit, totalItems);
+        
+        return res.status(200).json({
             success: true,
-            count: jobs.length,
+            pagination,
             data: jobs,
         });
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: 'Error fetching jobs',
             error: error.message,
