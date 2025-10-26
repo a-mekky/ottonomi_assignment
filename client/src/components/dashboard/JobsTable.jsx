@@ -2,12 +2,14 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Briefcase, Users, Calendar, ArrowRight } from 'lucide-react';
 import { formatRelativeDate } from '../../utils/formatDate';
+import { Pagination } from '../shared/Pagination';
+import { PaginationInfo } from '../shared/PaginationInfo';
 
 /**
  * Table component showing posted jobs with application counts
  * Clickable rows navigate to candidates page
  */
-export function JobsTable({ jobs }) {
+export function JobsTable({ jobs, pagination, onPageChange }) {
     const navigate = useNavigate();
 
     if (jobs.length === 0) {
@@ -77,6 +79,24 @@ export function JobsTable({ jobs }) {
                     </div>
                 ))}
             </div>
+
+            {/* Pagination Footer */}
+            {pagination && pagination.totalPages > 1 && (
+                <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <PaginationInfo
+                            currentPage={pagination.currentPage}
+                            itemsPerPage={pagination.itemsPerPage}
+                            totalItems={pagination.totalItems}
+                        />
+                        <Pagination
+                            currentPage={pagination.currentPage}
+                            totalPages={pagination.totalPages}
+                            onPageChange={onPageChange}
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
