@@ -3,20 +3,36 @@ import fs from 'fs';
 import path from 'path';
 import { Job } from '../models/Job.js';
 import { Application } from '../models/Application.js';
+import { getPaginationParams, getPaginationMetadata, parseSortParam } from '../utils/pagination.js';
 
 /**
- * Get all jobs with application counts and statistics
+ * Get all jobs with application counts and statistics (paginated)
  * return : Array of job objects with application counts and statistics
  */
 export const getAllJobsWithStats = async (req, res) => {
     try {
-        // Get all jobs
+        // Get pagination parameters
+        const { page, limit, skip } = getPaginationParams(req.query);
+        
+        // Parse sort parameter
+        const sort = parseSortParam(req.query.sort, '-datePosted');
+        
+        // Get total count
+        const totalItems = await Job.countDocuments();
+        
+        // Get paginated jobs
         const jobs = await Job.find()
-            .sort({ datePosted: -1 })
+            .sort(sort)
+            .skip(skip)
+            .limit(limit)
             .lean();
 
-        // Get application counts for each job using aggregation
+        // Get application counts for these specific jobs only
+        const jobIds = jobs.map(job => job._id);
         const applicationCounts = await Application.aggregate([
+            {
+                $match: { jobId: { $in: jobIds } }
+            },
             {
                 $group: {
                     _id: '$jobId',
@@ -42,9 +58,12 @@ export const getAllJobsWithStats = async (req, res) => {
             latestApplication: countsMap[job._id.toString()]?.latestApplication || null
         }));
 
+        // Generate pagination metadata
+        const pagination = getPaginationMetadata(page, limit, totalItems);
+
         return res.status(200).json({
             success: true,
-            count: jobs.length,
+            pagination,
             data: jobsWithStats
         });
     } catch (error) {
@@ -81,15 +100,29 @@ export const getApplicationsForJob = async (req, res) => {
             });
         }
 
-        // Get all applications for this job
+        // Get pagination parameters
+        const { page, limit, skip } = getPaginationParams(req.query);
+        
+        // Parse sort parameter
+        const sort = parseSortParam(req.query.sort, '-appliedAt');
+        
+        // Get total count for this job
+        const totalItems = await Application.countDocuments({ jobId });
+        
+        // Get paginated applications
         const applications = await Application.find({ jobId })
             .select('-__v') // Exclude version key
-            .sort({ appliedAt: -1 }) // Most recent first
+            .sort(sort)
+            .skip(skip)
+            .limit(limit)
             .lean();
+
+        // Generate pagination metadata
+        const pagination = getPaginationMetadata(page, limit, totalItems);
 
         return res.status(200).json({
             success: true,
-            count: applications.length,
+            pagination,
             job: {
                 id: job._id,
                 title: job.title,

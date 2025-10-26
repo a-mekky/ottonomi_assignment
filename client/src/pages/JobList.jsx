@@ -3,10 +3,17 @@ import { useJobs } from '../hooks/useJobs';
 import { JobCard } from '../components/job/JobCard';
 import { Loading } from '../components/shared/Loading';
 import { ErrorMessage } from '../components/shared/ErrorMessage';
+import { Pagination } from '../components/shared/Pagination';
+import { PaginationInfo } from '../components/shared/PaginationInfo';
 import { Briefcase } from 'lucide-react';
 
 export function JobList() {
-    const { jobs, loading, error, refetch } = useJobs();
+    const { jobs, loading, error, refetch, pagination } = useJobs();
+
+    const handlePageChange = (page) => {
+        refetch(page);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     if (loading) {
         return <Loading message="Loading opportunities..." />;
@@ -45,17 +52,31 @@ export function JobList() {
                         <h1 className="text-4xl font-bold text-gray-900 mb-2">
                             Find Your Dream Job
                         </h1>
-                        <p className="text-lg text-gray-600">
-                            Explore {jobs.length} amazing {jobs.length === 1 ? 'opportunity' : 'opportunities'} waiting for you
-                        </p>
+                        <div className="flex items-center justify-between">
+                            <p className="text-lg text-gray-600">
+                                Explore amazing opportunities waiting for you
+                            </p>
+                            <PaginationInfo
+                                currentPage={pagination.currentPage}
+                                itemsPerPage={pagination.itemsPerPage}
+                                totalItems={pagination.totalItems}
+                            />
+                        </div>
                     </div>
 
                     {/* Job Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                         {jobs.map((job) => (
                             <JobCard key={job._id} job={job} />
                         ))}
                     </div>
+
+                    {/* Pagination */}
+                    <Pagination
+                        currentPage={pagination.currentPage}
+                        totalPages={pagination.totalPages}
+                        onPageChange={handlePageChange}
+                    />
                 </div>
             {/* </Layout> */}
         </>

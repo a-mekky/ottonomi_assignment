@@ -15,7 +15,11 @@ import { ErrorMessage } from '../components/shared/ErrorMessage';
  */
 export function Dashboard() {
     const { stats, loading: statsLoading, error: statsError, refetch: refetchStats } = useDashboardStats();
-    const { jobs, loading: jobsLoading, error: jobsError, refetch: refetchJobs } = usePostedJobs();
+    const { jobs, loading: jobsLoading, error: jobsError, refetch: refetchJobs, pagination } = usePostedJobs();
+
+    const handleJobsPageChange = (page) => {
+        refetchJobs(page);
+    };
 
     // Combined loading state
     const loading = statsLoading || jobsLoading;
@@ -87,7 +91,7 @@ export function Dashboard() {
             )}
 
             {/* Jobs Table */}
-            <JobsTable jobs={jobs} />
+            <JobsTable jobs={jobs} pagination={pagination} onPageChange={handleJobsPageChange} />
 
             {/* Quick Action */}
             <div className="mt-8 text-center">

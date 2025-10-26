@@ -1,12 +1,14 @@
 import React from 'react';
 import { Users } from 'lucide-react';
 import { CandidateCard } from './CandidateCard';
+import { Pagination } from '../shared/Pagination';
+import { PaginationInfo } from '../shared/PaginationInfo';
 
 /**
  * List component that displays multiple candidates
  * Shows empty state if no candidates
  */
-export function CandidatesList({ candidates, jobTitle }) {
+export function CandidatesList({ candidates, jobTitle, pagination, onPageChange }) {
     if (candidates.length === 0) {
         return (
             <div className="bg-white rounded-2xl shadow-lg shadow-gray-200 border-2 border-gray-100 p-12 text-center">
@@ -37,6 +39,22 @@ export function CandidatesList({ candidates, jobTitle }) {
                     <CandidateCard key={candidate._id} candidate={candidate} />
                 ))}
             </div>
+
+            {/* Pagination */}
+            {pagination && pagination.totalPages > 1 && (
+                <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <PaginationInfo
+                        currentPage={pagination.currentPage}
+                        itemsPerPage={pagination.itemsPerPage}
+                        totalItems={pagination.totalItems}
+                    />
+                    <Pagination
+                        currentPage={pagination.currentPage}
+                        totalPages={pagination.totalPages}
+                        onPageChange={onPageChange}
+                    />
+                </div>
+            )}
         </div>
     );
 }

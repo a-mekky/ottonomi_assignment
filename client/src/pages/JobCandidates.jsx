@@ -12,7 +12,12 @@ import { formatFullDate } from '../utils/formatDate';
  */
 export function JobCandidates() {
     const { jobId } = useParams();
-    const { candidates, job, loading, error, refetch } = useCandidates(jobId);
+    const { candidates, job, loading, error, refetch, pagination } = useCandidates(jobId);
+
+    const handleCandidatesPageChange = (page) => {
+        refetch(page);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     if (loading) {
         return <Loading message="Loading candidates..." />;
@@ -68,7 +73,12 @@ export function JobCandidates() {
             </div>
 
             {/* Candidates List */}
-            <CandidatesList candidates={candidates} jobTitle={job.title} />
+            <CandidatesList 
+                candidates={candidates} 
+                jobTitle={job.title} 
+                pagination={pagination}
+                onPageChange={handleCandidatesPageChange}
+            />
         </div>
     );
 }
