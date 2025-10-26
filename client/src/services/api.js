@@ -22,8 +22,8 @@ api.interceptors.response.use(
 // Job Service
 export const jobService = {
     // Get all jobs
-    getAll: async () => {
-        const response = await api.get('/jobs');
+    getAll: async (params = {}) => {
+        const response = await api.get('/jobs', { params });
         return response.data;
     },
 
@@ -92,6 +92,41 @@ export const applicationService = {
             }
             throw new Error('Failed to submit application. Please try again.');
         }
+    },
+};
+
+// Dashboard Service
+export const dashboardService = {
+    // Get overall dashboard statistics
+    getStats: async () => {
+        const response = await api.get('/dashboard/stats');
+        return response.data;
+    },
+
+    // Get all jobs with application counts
+    getJobsWithStats: async (params = {}) => {
+        const response = await api.get('/dashboard/jobs', { params });
+        return response.data;
+    },
+
+    // Get applications for a specific job
+    getApplicationsForJob: async (jobId, params = {}) => {
+        const response = await api.get(`/dashboard/jobs/${jobId}/applications`, { params });
+        return response.data;
+    },
+
+    // Get single application details
+    getApplicationDetails: async (applicationId) => {
+        const response = await api.get(`/dashboard/applications/${applicationId}`);
+        return response.data;
+    },
+
+    // Download CV for an application
+    downloadCV: async (applicationId) => {
+        const response = await api.get(`/dashboard/applications/${applicationId}/cv`, {
+            responseType: 'blob', // Important for file download
+        });
+        return response;
     },
 };
 

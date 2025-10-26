@@ -5,17 +5,26 @@ import { JobList } from './pages/JobList';
 import { Layout } from './components/layout/Layout';
 import { JobDetail } from './pages/JobDetail';
 import { JobApply } from './pages/JobApply';
-import { JobForm } from './components/job/JobForm';
+import { PostJob } from './pages/PostJob';
+import { Dashboard } from './pages/Dashboard';
+import { JobCandidates } from './pages/JobCandidates';
 
 function App() {
   return (
     <Router>
       <Layout>
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<JobList />} />
           <Route path="/job/:id" element={<JobDetail />} />
           <Route path="/job/:id/apply" element={<JobApply />} />
-          <Route path="/post-job" element={<JobForm />} />
+
+          {/* Dashboard Routes */}
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard/jobs/:jobId/candidates" element={<JobCandidates />} />
+
+          {/* Job Management */}
+          <Route path="/post-job" element={<PostJob />} />
         </Routes>
       </Layout>
     </Router>

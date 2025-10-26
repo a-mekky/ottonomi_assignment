@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Briefcase, Building2, MapPin, DollarSign, Sparkles } from 'lucide-react';
+import { Briefcase, Building2, MapPin, DollarSign } from 'lucide-react';
 import { Input } from '../shared/Input';
 import { TextArea } from '../shared/TextArea';
 import { jobService } from '../../services/api';
@@ -89,20 +89,7 @@ export function JobForm() {
     }, [navigate]);
 
     return (
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="text-center mb-12">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-linear-to-br from-blue-500 to-purple-600 rounded-2xl mb-4">
-                    <Sparkles className="w-8 h-8 text-white" />
-                </div>
-                <h1 className="text-4xl font-bold text-gray-900 mb-3">
-                    Post a New Job
-                </h1>
-                <p className="text-lg text-gray-600">
-                    Find the perfect candidate for your team
-                </p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-xl shadow-gray-200 p-8 border-2 border-gray-100">
+        <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-xl shadow-gray-200 p-8 border-2 border-gray-100">
                 {errors.submit && (
                     <div className="mb-6 bg-red-50 border-2 border-red-200 rounded-xl p-4">
                         <p className="text-red-700 font-medium">{errors.submit}</p>
@@ -188,7 +175,6 @@ export function JobForm() {
                         )}
                     </button>
                 </div>
-            </form>
-        </div>
+        </form>
     );
 }
