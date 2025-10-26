@@ -11,6 +11,7 @@ import connectDB from './config/database.js';
 
 import jobRoutes from './routes/jobRoutes.js';
 import applicationRoutes from './routes/applicationRoutes.js';
+import dashboardRoutes from './routes/dashboardRoutes.js';
 
 // Create __dirname equivalent for ES6 modules
 const __filename = fileURLToPath(import.meta.url);
@@ -52,6 +53,8 @@ app.use('/uploads', express.static(path.join(__dirname, uploadDir)));
 app.use('/api/jobs', jobRoutes);
 // Application routes
 app.use('/api/applications', applicationRoutes);
+// Dashboard routes (for job posters)
+app.use('/api/dashboard', dashboardRoutes);
 
 
 // Basic health check route
