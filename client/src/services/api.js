@@ -22,8 +22,8 @@ api.interceptors.response.use(
 // Job Service
 export const jobService = {
     // Get all jobs
-    getAll: async () => {
-        const response = await api.get('/jobs');
+    getAll: async (params = {}) => {
+        const response = await api.get('/jobs', { params });
         return response.data;
     },
 
@@ -104,14 +104,14 @@ export const dashboardService = {
     },
 
     // Get all jobs with application counts
-    getJobsWithStats: async () => {
-        const response = await api.get('/dashboard/jobs');
+    getJobsWithStats: async (params = {}) => {
+        const response = await api.get('/dashboard/jobs', { params });
         return response.data;
     },
 
     // Get applications for a specific job
-    getApplicationsForJob: async (jobId) => {
-        const response = await api.get(`/dashboard/jobs/${jobId}/applications`);
+    getApplicationsForJob: async (jobId, params = {}) => {
+        const response = await api.get(`/dashboard/jobs/${jobId}/applications`, { params });
         return response.data;
     },
 
